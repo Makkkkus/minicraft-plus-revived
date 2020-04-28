@@ -103,7 +103,7 @@ public class Updater extends Game {
 			}
 		}
 		
-		//auto-save tick; marks when to do autosave.
+		// Auto-save tick; marks when to do autosave.
 		if(!paused || isValidServer())
 			asTick++;
 		if (asTick > astime) {
@@ -133,7 +133,7 @@ public class Updater extends Game {
 		
 		boolean hadMenu = menu != null;
 		if(isValidServer()) {
-			// this is to keep the game going while online, even with an unfocused window.
+			// This is to keep the game going while online, even with an unfocused window.
 			input.tick();
 			for (Level floor : levels) {
 				if (floor == null) continue;
@@ -162,17 +162,17 @@ public class Updater extends Game {
 			}
 			
 			if (menu != null) {
-				//a menu is active.
+				// A menu is active.
 				if (player != null)
 					player.tick(); // it is CRUCIAL that the player is ticked HERE, before the menu is ticked. I'm not quite sure why... the menus break otherwise, though.
 				menu.tick(input);
 				paused = true;
 			} else {
-				//no menu, currently.
+				// No menu, currently.
 				paused = false;
 				
 				if (!isValidServer()) {
-					//if player is alive, but no level change, nothing happens here.
+					// if player is alive, but no level change, nothing happens here.
 					if (player.isRemoved() && Renderer.readyToRenderGameplay && !Bed.inBed(player)) {
 						//makes delay between death and death menu.
 						World.playerDeadTime++;
@@ -184,7 +184,7 @@ public class Updater extends Game {
 						World.pendingLevelChange = 0;
 					}
 					
-					player.tick(); // ticks the player when there's no menu.
+					player.tick(); // Ticks the player when there's no menu.
 					if (isValidClient() && Bed.inBed(player) && !Bed.sleeping() && input.getKey("exit").clicked)
 						Game.client.sendBedExitRequest();
 					
@@ -195,13 +195,13 @@ public class Updater extends Game {
 					}
 				}
 				else if (isValidServer()) {
-					// here is where I should put things like select up/down, backspace to boot, esc to open pause menu, etc.
+					// Here is where I should put things like select up/down, backspace to boot, esc to open pause menu, etc.
 					if (input.getKey("pause").clicked)
 						setMenu(new PauseDisplay());
 				}
 				
 				if (menu == null && input.getKey("F3").clicked) { // shows debug info in upper-left
-					Renderer.showinfo = !Renderer.showinfo;
+					Renderer.showInfo = !Renderer.showInfo;
 				}
 				
 				//for debugging only

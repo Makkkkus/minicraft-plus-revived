@@ -45,6 +45,8 @@ public class Settings {
 
 		options.put("textures", new ArrayEntry<>("Textures", "Original", "Custom"));
 		options.get("textures").setSelection(0);
+
+		options.put("gamescale", new RangeEntry("Game Scale", 100, 200, 100));
 	}
 	
 	public static void init() {}

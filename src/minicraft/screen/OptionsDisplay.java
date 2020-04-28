@@ -17,7 +17,8 @@ public class OptionsDisplay extends Display {
 				Settings.getEntry("skinon"),
 				new SelectEntry("Change Key Bindings", () -> Game.setMenu(new KeyInputDisplay())),
 				Settings.getEntry("language"),
-				Settings.getEntry("textures")
+				Settings.getEntry("textures"),
+				Settings.getEntry("gamescale")
 			)
 			.setTitle("Options")
 			.createMenu()

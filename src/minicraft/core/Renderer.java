@@ -27,10 +27,15 @@ import minicraft.screen.RelPos;
 
 public class Renderer extends Game {
 	private Renderer() {}
-	
-	public static final int HEIGHT = 192;
-	public static final int WIDTH = 288;
-	static float SCALE = 3;
+
+	private static final int DEFAULT_HEIGHT = 192;
+	private static final int DEFAULT_WIDTH = 288;
+	private static final float DEFAULT_SCALE = 3;
+	public static int HEIGHT = DEFAULT_HEIGHT;
+	public static int WIDTH = DEFAULT_WIDTH;
+	public static float SCALE = DEFAULT_SCALE;
+	// This is the scale of the game running. Small number = Bigger Tiles.
+	private static float GAME_SCALE;
 	
 	public static Screen screen; // Creates the main screen
 	
@@ -41,7 +46,7 @@ public class Renderer extends Game {
 	private static Screen lightScreen; // Creates a front screen to render the darkness in caves (Fog of war).
 	
 	public static boolean readyToRenderGameplay = false;
-	public static boolean showinfo = false;
+	public static boolean showInfo = false;
 	
 	private static Ellipsis ellipsis = new SmoothEllipsis(new TickUpdater());
 
@@ -65,7 +70,7 @@ public class Renderer extends Game {
 	
 	static void initScreen() {
 		if(!HAS_GUI) return;
-		
+
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
@@ -288,23 +293,23 @@ public class Renderer extends Game {
 				Font.drawBackground(pType + " (" + (pTime / 60) + ":" + (pTime % 60) + ")", screen, 180, 17 + i * Font.textHeight(), pType.dispColor);
 			}
 		}
-		
-		
+
+
 		// This is the status icons, like health hearts, stamina bolts, and hunger "burgers".
 		if (!isMode("creative")) {
 			for (int i = 0; i < Player.maxStat; i++) {
-				
+
 				// renders armor
-				int armor = player.armor*Player.maxStat / Player.maxArmor;
+				int armor = player.armor * Player.maxStat / Player.maxArmor;
 				if (i <= armor && player.curArmor != null) {
 					screen.render(i * 8, Screen.h - 24, (player.curArmor.level - 1) + 9 * 32, 0, 0);
 				}
-				
+
 				// renders your current red hearts, or black hearts for damaged health.
 				if (i < player.health) {
-					screen.render(i * 8, Screen.h - 16, 0 + 2 * 32, 0, 3);
+					screen.render(i * 8, Screen.h - 16, 2 * 32, 0, 3);
 				} else {
-					screen.render(i * 8, Screen.h - 16, 0 + 3 * 32, 0, 3);
+					screen.render(i * 8, Screen.h - 16, 3 * 32, 0, 3);
 				}
 				
 				if (player.staminaRechargeDelay > 0) {
@@ -337,7 +342,7 @@ public class Renderer extends Game {
 	
 	private static void renderDebugInfo() {
 		int textcol = Color.WHITE;
-		if (showinfo) { // renders show debug info on the screen.
+		if (showInfo) { // renders show debug info on the screen.
 			ArrayList<String> info = new ArrayList<>();
 			info.add("VERSION " + Initializer.VERSION);
 			info.add(Initializer.fra + " fps");
@@ -395,10 +400,10 @@ public class Renderer extends Game {
 		int h = 1;
 		
 		// renders the four corners of the box
-		screen.render(xx - 8, yy - 8, 0 + 21 * 32, 0, 3);
-		screen.render(xx + w * 8, yy - 8, 0 + 21 * 32, 1, 3);
-		screen.render(xx - 8, yy + 8, 0 + 21 * 32, 2, 3);
-		screen.render(xx + w * 8, yy + 8, 0 + 21 * 32, 3, 3);
+		screen.render(xx - 8, yy - 8, 21 * 32, 0, 3);
+		screen.render(xx + w * 8, yy - 8, 21 * 32, 1, 3);
+		screen.render(xx - 8, yy + 8, 21 * 32, 2, 3);
+		screen.render(xx + w * 8, yy + 8, 21 * 32, 3, 3);
 		
 		// renders each part of the box...
 		for (int x = 0; x < w; x++) {
@@ -421,7 +426,30 @@ public class Renderer extends Game {
 		else // ...bright yellow color
 			Font.draw(msg, screen, xx, yy, Color.get(5, 255));
 	}
-	
+
+
+	/**
+	 * This sets the scale of the game, which determines how big tiles are.
+	 * Not to be confused with window scale.
+	 *
+	 * @param scale The scale of the game running. Min: 100
+	 */
+	public static void setGameScale(int scale) {
+		if (scale < 100) scale = 100;
+		GAME_SCALE = scale / 100;
+		HEIGHT = Math.round(DEFAULT_HEIGHT * GAME_SCALE);
+		WIDTH = Math.round(DEFAULT_WIDTH * GAME_SCALE);
+		SCALE = SCALE / GAME_SCALE;
+	}
+
+	/**
+	 * Get the scale of the game.
+	 *
+	 * @return Returns the scale game running.
+	 */
+	public float getGameScale() {
+		return GAME_SCALE * 100;
+	}
 	
 	static java.awt.Dimension getWindowSize() {
 		return new java.awt.Dimension(new Float(WIDTH * SCALE).intValue(), new Float(HEIGHT * SCALE).intValue());
