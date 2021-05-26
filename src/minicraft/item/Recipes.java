@@ -106,6 +106,7 @@ public class Recipes {
 		furnaceRecipes.add(new Recipe("iron_1", "iron Ore_4", "coal_1"));
 		furnaceRecipes.add(new Recipe("gold_1", "gold Ore_4", "coal_1"));
 		furnaceRecipes.add(new Recipe("glass_1", "sand_4", "coal_1"));
+		furnaceRecipes.add(new Recipe("Natural Rock_5", "stone_5", "coal_1"));
 		
 		ovenRecipes.add(new Recipe("cooked pork_1", "raw pork_1", "coal_1"));
 		ovenRecipes.add(new Recipe("steak_1", "raw beef_1", "coal_1"));

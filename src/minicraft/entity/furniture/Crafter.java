@@ -8,26 +8,28 @@ import minicraft.gfx.Sprite;
 import minicraft.item.Recipe;
 import minicraft.item.Recipes;
 import minicraft.screen.CraftingDisplay;
+import minicraft.screen.MeltingDisplay;
 
 public class Crafter extends Furniture {
 	
 	public enum Type {
-		Workbench (new Sprite(16, 26, 2, 2, 2), 3, 2, Recipes.workbenchRecipes),
-		Oven (new Sprite(12, 26, 2, 2, 2), 3, 2, Recipes.ovenRecipes),
-		Furnace (new Sprite(14, 26, 2, 2, 2), 3, 2, Recipes.furnaceRecipes),
-		Anvil (new Sprite(8, 26, 2, 2, 2), 3, 2, Recipes.anvilRecipes),
-		Enchanter (new Sprite(24, 26, 2, 2, 2), 7, 2, Recipes.enchantRecipes),
-		Loom (new Sprite(26, 26, 2, 2, 2), 7, 2, Recipes.loomRecipes);
+		Workbench (new Sprite(16, 26, 2, 2, 2), 3, 2, Recipes.workbenchRecipes, false),
+		Oven (new Sprite(12, 26, 2, 2, 2), 3, 2, Recipes.ovenRecipes, false),
+		Furnace (new Sprite(14, 26, 2, 2, 2), 3, 2, Recipes.furnaceRecipes, false),
+		Anvil (new Sprite(8, 26, 2, 2, 2), 3, 2, Recipes.anvilRecipes, false),
+		Enchanter (new Sprite(24, 26, 2, 2, 2), 7, 2, Recipes.enchantRecipes, false),
+		Loom (new Sprite(26, 26, 2, 2, 2), 7, 2, Recipes.loomRecipes, false);
 		
 		public ArrayList<Recipe> recipes;
 		protected Sprite sprite;
 		protected int xr, yr;
+		protected boolean melt;
 		
-		
-		Type(Sprite sprite, int xr, int yr, ArrayList<Recipe> list) {
+		Type(Sprite sprite, int xr, int yr, ArrayList<Recipe> list, boolean melt) {
 			this.sprite = sprite;
 			this.xr = xr;
 			this.yr = yr;
+			this.melt = melt;
 			recipes = list;
 			Crafter.names.add(this.name());
 		}
@@ -46,7 +48,11 @@ public class Crafter extends Furniture {
 	}
 	
 	public boolean use(Player player) {
-		Game.setMenu(new CraftingDisplay(type.recipes, type.name(), player));
+		if (type.melt) {
+			Game.setMenu(new CraftingDisplay(type.recipes, type.name(), player));
+		} else {
+			Game.setMenu(new MeltingDisplay(type.recipes, type.name(), player));
+		}
 		return true;
 	}
 	
