@@ -293,8 +293,23 @@ public class Menu {
 		@NotNull private Point anchor = center;
 		@NotNull private RelPos menuPos = RelPos.CENTER;
 		private Dimension menuSize = null;
-		
+
+		/**
+		 * Build a menu.
+		 * @param hasFrame If the menu has a frame around it.
+		 * @param entrySpacing How much space there should be between two lines. (usually 0)
+		 * @param entryPos The position of the entries in the menu.
+		 * @param entries The actual entries.
+		 */
 		public Builder(boolean hasFrame, int entrySpacing, RelPos entryPos, ListEntry... entries) { this(hasFrame, entrySpacing, entryPos, Arrays.asList(entries)); }
+
+		/**
+		 * Build a menu.
+		 * @param hasFrame If the menu has a frame around it.
+		 * @param entrySpacing How much space there should be between two lines. (usually 0)
+		 * @param entryPos The position of the entries in the menu.
+		 * @param entries The actual entries.
+		 */
 		public Builder(boolean hasFrame, int entrySpacing, RelPos entryPos, List<ListEntry> entries) {
 			menu = new Menu();
 			setEntries(entries);
