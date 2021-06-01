@@ -5,13 +5,9 @@ import javax.swing.Timer;
 import minicraft.core.Game;
 import minicraft.core.World;
 import minicraft.core.io.Localization;
-import minicraft.gfx.Color;
-import minicraft.gfx.Ellipsis;
+import minicraft.gfx.*;
 import minicraft.gfx.Ellipsis.DotUpdater.TimeUpdater;
 import minicraft.gfx.Ellipsis.SmoothEllipsis;
-import minicraft.gfx.Font;
-import minicraft.gfx.FontStyle;
-import minicraft.gfx.Screen;
 import minicraft.saveload.Save;
 
 public class LoadingDisplay extends Display {
@@ -19,9 +15,9 @@ public class LoadingDisplay extends Display {
 	private static float percentage = 0;
 	private static String progressType = "";
 	
-	private Timer t;
+	private final Timer t;
 	private String msg = "";
-	private Ellipsis ellipsis = new SmoothEllipsis(new TimeUpdater());
+	private final Ellipsis ellipsis = new SmoothEllipsis(new TimeUpdater());
 	
 	public LoadingDisplay() {
 		super(true, false);
@@ -69,9 +65,10 @@ public class LoadingDisplay extends Display {
 	public void render(Screen screen) {
 		super.render(screen);
 		int percent = Math.round(percentage);
-		Font.drawParagraph(screen, new FontStyle(Color.RED), 6,
-			Localization.getLocalized(msg)+(progressType.length()>0?" "+Localization.getLocalized(progressType):"")+ ellipsis.updateAndGet(),
-			percent+"%"
+		Font.drawParagraph(screen, new FontStyle(Color.RED), 0,
+			Localization.getLocalized(msg)+(progressType.length()>0?" "+Localization.getLocalized(progressType):"")+ellipsis.updateAndGet()
 		);
+
+		Font.drawBackground(percent+ "%", screen, Screen.center.x, Screen.center.y+6, Color.GREEN);
 	}
 }

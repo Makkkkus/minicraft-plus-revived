@@ -14,8 +14,8 @@ public class Crafter extends Furniture {
 	
 	public enum Type {
 		Workbench (new Sprite(16, 26, 2, 2, 2), 3, 2, Recipes.workbenchRecipes, false),
-		Oven (new Sprite(12, 26, 2, 2, 2), 3, 2, Recipes.ovenRecipes, false),
-		Furnace (new Sprite(14, 26, 2, 2, 2), 3, 2, Recipes.furnaceRecipes, false),
+		Oven (new Sprite(12, 26, 2, 2, 2), 3, 2, Recipes.ovenRecipes, true),
+		Furnace (new Sprite(14, 26, 2, 2, 2), 3, 2, Recipes.furnaceRecipes, true),
 		Anvil (new Sprite(8, 26, 2, 2, 2), 3, 2, Recipes.anvilRecipes, false),
 		Enchanter (new Sprite(24, 26, 2, 2, 2), 7, 2, Recipes.enchantRecipes, false),
 		Loom (new Sprite(26, 26, 2, 2, 2), 7, 2, Recipes.loomRecipes, false);
@@ -49,9 +49,9 @@ public class Crafter extends Furniture {
 	
 	public boolean use(Player player) {
 		if (type.melt) {
-			Game.setMenu(new CraftingDisplay(type.recipes, type.name(), player));
+			Game.setMenu(new MeltingDisplay(type, player));
 		} else {
-			Game.setMenu(new MeltingDisplay(type.recipes, type.name(), player));
+			Game.setMenu(new CraftingDisplay(type.recipes, type.name(), player));
 		}
 		return true;
 	}

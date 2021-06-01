@@ -3,33 +3,43 @@ package minicraft.screen;
 import minicraft.core.Game;
 import minicraft.core.io.InputHandler;
 import minicraft.core.io.Sound;
+import minicraft.entity.furniture.Crafter;
 import minicraft.entity.mob.Player;
 import minicraft.gfx.Point;
+import minicraft.gfx.Screen;
 import minicraft.gfx.SpriteSheet;
 import minicraft.item.Item;
 import minicraft.item.Items;
 import minicraft.item.Recipe;
+import minicraft.item.StackableItem;
 import minicraft.screen.entry.ItemListing;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 public class MeltingDisplay extends Display {
 	private final Player player;
 	private final Recipe[] recipes;
 
 	private final RecipeMenu recipeMenu;
-	private final Menu.Builder itemCountMenu, costsMenu;
+	private final Menu.Builder itemCountMenu, costsMenu, meltDisplay;
 
-	public MeltingDisplay(List<Recipe> recipes, String title, Player player) {
+	private final StackableItem[] fuelList = new StackableItem[]{ (StackableItem) Items.get("Coal") }; // Must be a stackable item
+	private final StackableItem currentFuel = (StackableItem) Items.get("Coal");
+
+	public MeltingDisplay(Crafter.Type type, Player player) {
+		ArrayList<Recipe> recipes = type.recipes;
 		for (Recipe recipe : recipes)
 			recipe.checkCanCraft(player);
 
-		recipeMenu = new RecipeMenu(recipes, title, player);
-
+		String title = type.name();
 		this.player = player;
 		this.recipes = recipes.toArray(new Recipe[0]);
+
+		recipeMenu = new RecipeMenu(recipes, title, player);
 
 		itemCountMenu = new Menu.Builder(true, 0, RelPos.LEFT)
 				.setTitle("Have:")
@@ -41,13 +51,26 @@ public class MeltingDisplay extends Display {
 				.setTitlePos(RelPos.TOP_LEFT)
 				.setPositioning(new Point(itemCountMenu.createMenu().getBounds().getLeft(), recipeMenu.getBounds().getBottom()), RelPos.TOP_RIGHT);
 
-		menus = new Menu[]{recipeMenu, itemCountMenu.createMenu(), costsMenu.createMenu()};
+		meltDisplay = new Menu.Builder(true, 0, RelPos.LEFT)
+				.setTitle("Fuel")
+				.setTitlePos(RelPos.TOP_LEFT)
+				.setPositioning(Screen.center, RelPos.BOTTOM_LEFT);
+
+		menus = new Menu[]{ recipeMenu, itemCountMenu.createMenu(), costsMenu.createMenu(), meltDisplay.createMenu() };
 
 		refreshData();
 	}
 
 	private void refreshData() {
-		Menu prev = menus[2];
+		Menu prev = menus[3];
+		if (currentFuel != null) {
+			menus[3] = meltDisplay
+					.setEntries(new ItemListing(currentFuel, Integer.toString(currentFuel.count)))
+					.createMenu();
+		} else {
+			menus[3] = new Menu.Builder(false, 0, RelPos.CENTER).setTitle("No Fuel Found", Color.RED.getRGB()).createMenu();
+		}
+
 		menus[2] = costsMenu
 				.setEntries(getCurItemCosts())
 				.createMenu();
@@ -58,6 +81,10 @@ public class MeltingDisplay extends Display {
 				.createMenu();
 		menus[1].setColors(prev);
 	}
+
+	//private StackableItem getFuelFromInventory() {
+		//return player.getInventory().
+	//}
 
 	private int getCurItemCount() {
 		return player.getInventory().count(recipes[recipeMenu.getSelection()].getProduct());
